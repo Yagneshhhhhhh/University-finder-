@@ -1,0 +1,90 @@
+#HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Finder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>University Finder</h1>
+        <input type="text" id="search" placeholder="Enter country or city">
+        <button onclick="searchUniversities()">Search</button>
+        <div id="results"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+#CSS
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #0056b3;
+}
+#results {
+    margin-top: 20px;
+}
+.university {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+#JAVA SCRIPT
+async function searchUniversities() {
+    const query = document.getElementById('search').value;
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = 'Loading...';
+
+    try {
+        const response = await fetch(`/search?query=${query}`);
+        const data = await response.json();
+
+        if (data.length === 0) {
+            resultsDiv.innerHTML = 'No universities found.';
+            return;
+        }
+
+        resultsDiv.innerHTML = '';
+        data.forEach(university => {
+            const div = document.createElement('div');
+            div.className = 'university';
+            div.innerHTML = `<strong>${university.name}</strong><br>${university.country}<br>${university.city}`;
+            resultsDiv.appendChild(div);
+        });
+    } catch (error) {
+        resultsDiv.innerHTML = 'An error occurred while fetching data.';
+        console.error(error);
+    }
+}
+
